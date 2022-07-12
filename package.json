@@ -1,6 +1,6 @@
 {
-  "name": "myreact",
-  "homepage": "https://MaKiVerem4011.github.io/ReactTutorial",
+  "name": "react_tutorial",
+  "homepage": "https://MaKiVerem4011.github.io/react_tutorial",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
