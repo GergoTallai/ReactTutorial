@@ -43,7 +43,7 @@ const App = props => {
       //Button Metódus neve utánra "()" raksz akkor betöltéskor lefut
   );
 }
-*/
+
 
 /*
 Funkcióval is megoldható:
@@ -65,31 +65,59 @@ class App extends Component {
       {name: "Balázs", age: "22"},
       {name: "János", age: "32"},
     ],
-    masikState: 'másik state'
+    masikState: 'másik state',
+    lathatosag: true
   }
 
-  nameChangeHander = ()=> {
-    //NE HASZNÁLD!!! this.state.persons[0].name = "Jakab"
+  nameChangeHander = (ujNev)=> {
+    //NE HASZNÁLD!!!-> this.state.persons[0].name = "Jakab"
     this.setState({
       persons: [
-        {name: "Jakab", age: "99"},
+        {name: ujNev, age: "99"},
         {name: "Karcsi", age: "85"},
-      ],
-      masikState: 'Másik state'
+      ]
     });
     console.log(this.state);
   }
 
-  render(){
+  nevValtozasKezelo = (event) =>{
+    this.setState({
+      persons: [
+        {name: event.target.value, age: "99"},
+        {name: event.target.value, age: "85"},
+      ]
+    });
+  }
 
+  kapcsolo = () => {
+      const lathato = this.state.lathatosag;
+      this.setState({lathatosag: !lathato});
+  }
+
+  render(){
     return( //Mindig kell return
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>Party hard!</p>
-          <button onClick={this.nameChangeHander}>Katt ide</button> 
-          <Person name={this.state.persons[0].name} age={this.state.persons[0].age} />
-          <Person name={this.state.persons[1].name} age={this.state.persons[1].age}>Hobbim az info!</Person>
+          <button onClick={this.kapcsolo}>Kapcsoló!</button> 
+          { this.state.lathatosag ?
+            <div>
+              <Person
+                name={this.state.persons[0].name} 
+                age={this.state.persons[0].age} 
+                click={this.nameChangeHander.bind(this, 'Lakkos Jocó')} //Hatákony megoldás
+                change={this.nevValtozasKezelo}
+              />
+              <Person
+                name={this.state.persons[1].name}
+                age={this.state.persons[1].age}
+                click={(event) => this.nameChangeHander('Sörös Gábor')} //Nem javasolt mert plusz munkát végez a react
+                change={this.nevValtozasKezelo}
+              />
+            </div>
+            : null
+          }
         </header>
       </div>
       //Button Metódus neve utánra "()" raksz akkor betöltéskor lefut
