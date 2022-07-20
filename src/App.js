@@ -64,10 +64,14 @@ class App extends Component {
     persons: [
       {name: "Balázs", age: "22"},
       {name: "János", age: "32"},
+      {name: "Béla", age: "44"},
+      {name: "Elemer", age: "37"},
     ],
     masikState: 'másik state',
     lathatosag: true
   }
+
+
 
   nameChangeHander = (ujNev)=> {
     //NE HASZNÁLD!!!-> this.state.persons[0].name = "Jakab"
@@ -94,35 +98,67 @@ class App extends Component {
       this.setState({lathatosag: !lathato});
   }
 
+  personDeletHandler = (personIndex) => {
+    const persons = this.state.persons;
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
+  }
+
   render(){
+    let persons = null;
+
+    if(this.state.lathatosag == false) {
+      persons = (
+        <header>
+          <div>
+            <p>IF!</p>
+            <p>IF Feltétel</p>
+          </div>
+        </header>
+      );
+    }
+    
     return( //Mindig kell return
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>Party hard!</p>
           <button onClick={this.kapcsolo}>Kapcsoló!</button> 
-          { this.state.lathatosag ?
+          { this.state.lathatosag ? //Ternális feltétel a ? b : c, azaz ha a igaz akkor b ha nem akkor c
             <div>
-              <Person
-                name={this.state.persons[0].name} 
-                age={this.state.persons[0].age} 
-                click={this.nameChangeHander.bind(this, 'Lakkos Jocó')} //Hatákony megoldás
-                change={this.nevValtozasKezelo}
-              />
-              <Person
-                name={this.state.persons[1].name}
-                age={this.state.persons[1].age}
-                click={(event) => this.nameChangeHander('Sörös Gábor')} //Nem javasolt mert plusz munkát végez a react
-                change={this.nevValtozasKezelo}
-              />
+              {
+                //Map metódus, state-person-ból kiszedi az adatokat és feltölti/kilistázza
+                this.state.persons.map((person, index) => { 
+                  return(
+                    <Person name={person.name} age={person.age} delete={() => this.personDeletHandler(index)} />
+                  )
+                })
+              }
             </div>
-            : null
+            : null //Ternális feltétel
           }
         </header>
+        {persons}
       </div>
+      
       //Button Metódus neve utánra "()" raksz akkor betöltéskor lefut
     );
   }
 }
 
+
+/*
+                <Person
+                  name={this.state.persons[0].name} 
+                  age={this.state.persons[0].age} 
+                  click={this.nameChangeHander.bind(this, 'Lakkos Jocó')} //Hatákony megoldás
+                  change={this.nevValtozasKezelo}
+                />
+                <Person
+                  name={this.state.persons[1].name}
+                  age={this.state.persons[1].age}
+                  click={(event) => this.nameChangeHander('Sörös Gábor')} //Nem javasolt mert plusz munkát végez a react
+                  change={this.nevValtozasKezelo}
+                />
+*/
 export default App;
