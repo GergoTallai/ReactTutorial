@@ -62,34 +62,31 @@ class App extends Component {
 
   state = { //Speciális objektum a state, foglalt kulcsszó, ezzel adható meg értékek
     persons: [
-      {name: "Balázs", age: "22"},
-      {name: "János", age: "32"},
-      {name: "Béla", age: "44"},
-      {name: "Elemer", age: "37"},
+      {id: '001', name: "Balázs", age: "22"},
+      {id: '002', name: "János", age: "32"},
+      {id: '003', name: "Béla", age: "44"},
+      {id: '004', name: "Elemer", age: "37"},
     ],
     masikState: 'másik state',
     lathatosag: true
   }
 
+  nevValtozasKezelo = (event, id) =>{
 
-
-  nameChangeHander = (ujNev)=> {
-    //NE HASZNÁLD!!!-> this.state.persons[0].name = "Jakab"
-    this.setState({
-      persons: [
-        {name: ujNev, age: "99"},
-        {name: "Karcsi", age: "85"},
-      ]
+    const szemelyIndex = this.state.persons.findIndex(aktSzemely => {
+      return aktSzemely.id === id;
     });
-    console.log(this.state);
-  }
 
-  nevValtozasKezelo = (event) =>{
+    const szemely = {
+      ...this.state.persons[szemelyIndex]
+    }
+
+    szemely.name = event.target.value;
+    const szemelyek = [...this.state.persons];
+    szemelyek[szemelyIndex] = szemely;
+
     this.setState({
-      persons: [
-        {name: event.target.value, age: "99"},
-        {name: event.target.value, age: "85"},
-      ]
+      persons: szemelyek
     });
   }
 
@@ -99,12 +96,20 @@ class App extends Component {
   }
 
   personDeletHandler = (personIndex) => {
-    const persons = this.state.persons;
-    persons.splice(personIndex, 1);
-    this.setState({persons: persons});
+    //const szemelyek = this.state.persons;
+    const szemelyek = [...this.state.persons]
+    szemelyek.splice(personIndex, 1);
+    this.setState({persons: szemelyek});
   }
 
   render(){
+    const stilus = {
+      backgroundColor: 'green',
+      border: '2px solid grey',
+      padding: '8px',
+      color: 'white',
+    }
+    
     let persons = null;
 
     if(this.state.lathatosag == false) {
@@ -116,21 +121,37 @@ class App extends Component {
           </div>
         </header>
       );
+      stilus.backgroundColor = 'red';
     }
     
+    let classes = []; //red bold
+
+    if (this.state.persons.length === 3) {
+      classes.push('red');
+      classes.push('bold');
+    } else {
+      classes = [];
+    }
+
     return( //Mindig kell return
       <div className="App">
+        <h1 className={classes.join(' ')}>Dinamik</h1>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>Party hard!</p>
-          <button onClick={this.kapcsolo}>Kapcsoló!</button> 
+          <button onClick={this.kapcsolo} style={stilus}>Kapcsoló!</button> 
           { this.state.lathatosag ? //Ternális feltétel a ? b : c, azaz ha a igaz akkor b ha nem akkor c
             <div>
               {
                 //Map metódus, state-person-ból kiszedi az adatokat és feltölti/kilistázza
                 this.state.persons.map((person, index) => { 
                   return(
-                    <Person name={person.name} age={person.age} delete={() => this.personDeletHandler(index)} />
+                    <Person name={person.name} 
+                    age={person.age} 
+                    delete={() => this.personDeletHandler(index)} 
+                    key={person.id}
+                    change={ (event) => this.nevValtozasKezelo(event, person.id)}
+                    />
                   )
                 })
               }
